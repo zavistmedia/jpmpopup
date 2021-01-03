@@ -24,14 +24,6 @@ Note: This is just for demo purposes, and I do recommend using a db system to st
 
 HTML
 
-<div class="gallery">
-  <div class="item">
-    <img src="thumbnail image" alt="" data-file="YouTube video URL" data-id="YT-1" data-type="iframe" data-about="about video" data-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" data-width="760px" data-height="515px" />
-  </div>
-</div>
-
-JavaScript
-
 &#x3C;div class=&#x22;gallery&#x22;&#x3E;
   &#x3C;div class=&#x22;item&#x22;&#x3E;
     &#x3C;img src=&#x22;thumbnail image&#x22; alt=&#x22;&#x22; data-file=&#x22;YouTube video URL&#x22; data-id=&#x22;YT-1&#x22; data-type=&#x22;iframe&#x22; data-about=&#x22;about video&#x22; data-allow=&#x22;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen&#x22; data-width=&#x22;760px&#x22; data-height=&#x22;515px&#x22; /&#x3E;

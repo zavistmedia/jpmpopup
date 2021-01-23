@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+		<title>JPMalloy.com</title>
+		<link rel="stylesheet" type="text/css" href="pop6.css" />
+		<script type="text/javascript" src="pop6.js"></script>
+		<script type="text/javascript" src="jq.js"></script>
+		<script type="text/javascript" src="jquery.timeago.js"></script>
+	</head>
+<body>
+<header><img src="jpmalloy.png" alt="jpmalloy.com" /></header>
+<section class="examples">
+	<h1>News</h1>
+	<p>1/2/2021 - JPM Pop-up Version 4 released. This is now 100% free. Enjoy and share with others. Credit must stay intact.</p>
+</section>
+<section class="examples">
+	<h1>JPM Pop-up</h1>
+	<!-- 2 Gallery HTML Example -->
+	<h2>Examples</h2>
+	<p>Fade, Flip, and Slide animation available</p>
+	<div class="gallery">
+		<div class="item">
+			<img src="media/thumb-x.jpg" alt="Space Man" data-file="media/x.jpg" data-id="image-2" data-type="image" data-about="Space Man" />
+		</div>		<div class="item">
+			<img src="media/thumb-aisexy.jpg" alt="AI" data-file="media/aisexy.jpg" data-id="image-1" data-type="image" data-about="AI" />
+		</div>
+		<div class="item">
+			<img src="media/city.png" alt="City" data-file="media/city.mp4" data-id="image-3" data-type="video" data-filetype="video/mp4" data-about="City" />
+		</div>
+	</div>
+	
+	<div class="gallery2">
+		<div class="item">
+			<img src="https://i.ytimg.com/vi/1ASpBpT8bRQ/hqdefault.jpg" alt="The Cure" data-file="https://www.youtube.com/embed/1ASpBpT8bRQ" data-id="YT-1" data-type="iframe" data-about="The Cure" data-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" data-width="760px" data-height="515px" />
+		</div>
+		<div class="item">
+			<img src="https://i.ytimg.com/vi/yoqYO0ShUXc/hqdefault.jpg" alt="Journey - Tron Legacy Original Ost" data-file="https://www.youtube.com/embed/yoqYO0ShUXc" data-id="YT-1" data-type="iframe" data-about="Journey - Tron Legacy Original Ost" data-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" data-width="760px" data-height="515px" />
+		</div>
+		<div class="item">
+			<img src="https://i.ytimg.com/vi/AIBv2GEnXlc/hqdefault.jpg" alt="INXS - Never Tear Us Apart" data-file="https://www.youtube.com/embed/AIBv2GEnXlc" data-id="YT-3" data-type="iframe" data-about="INXS - Never Tear Us Apart" data-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" data-width="760px" data-height="515px" />
+		</div>
+	</div>
+
+	<p>Royalty free demo images and video thanks to pixabay.com. The example iframe video and image sources from YouTube are provided for educational purpose.</p>
+	<p><a href="javascript:void(0)" onclick="popUp()">Default Pop-up</a></p>
+</section>
+
+<section class="examples" style="margin-top:20px">
+	<h2>Code Example</h2>
+	<p>HTML</p>
+	<pre>&#x3C;div class=&#x22;gallery&#x22;&#x3E;
+  &#x3C;div class=&#x22;item&#x22;&#x3E;
+    &#x3C;img src=&#x22;thumbnail image&#x22; alt=&#x22;&#x22; data-file=&#x22;YouTube video URL&#x22; data-id=&#x22;YT-1&#x22; data-type=&#x22;iframe&#x22; data-about=&#x22;about video&#x22; data-allow=&#x22;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen&#x22; data-width=&#x22;760px&#x22; data-height=&#x22;515px&#x22; /&#x3E;
+  &#x3C;/div&#x3E;
+&#x3C;/div&#x3E;</pre>
+	<p>JavaScript</p>
+<pre>
+var jpmx = new jpmpopup({
+  'container':'popup-container4',
+  'style' :'background-color:rgba(0, 0, 0, 0.85);width:100%;z-index:5',
+  'onclose' : function () {
+    console.log(this);
+  },
+  'gallery':{
+    'animation':'fade',
+    'container':'.gallery',
+    'thumbnav':'on',
+    'onclick': function(item) {
+
+      this.toConsole(this);
+      // a thumbnail was clicked, do something
+      // use ajax here to pull/get some comments about the image or video etc
+      // item.id contains the id of the thumbnail clicked
+
+      // display info etc
+      //'+ (this.item.index + 1) +' of '+ this.gallerytotal +' build out navigation like on this page
+
+      item.data = '&#x3C;div style=&#x22;padding:20px&#x22;&#x3E;&#x27;+ item.about +&#x27;&#x3C;p&#x3E;comment interface can go here&#x3C;/p&#x3E;&#x3C;/div&#x3E;';
+
+      item.html = '&#x3C;div class=&#x22;wrap-container&#x22;&#x3E;&#x3C;div class=&#x22;left-column&#x22; id=&#x22;left-column&#x22;&#x3E;&#x3C;/div&#x3E;&#x3C;div id=&#x22;right-column&#x22; class=&#x22;right-column&#x22;&#x3E;&#x27;+item.data+&#x27;&#x3C;/div&#x3E;';
+
+      this.fullScreen(item.html);
+    }
+  }
+});
+</pre>
+</section>
+<section class="examples" style="margin-top:20px">
+	<h2>Download</h2>
+	<p><a href="jpmpop4.zip" download="jpmpop4.zip">jpmpop4.zip</a> Version 4</p>
+	<p>Feel free to share the download link with others.</p>
+</section>
+
+<script>
+
+	var jpmx = new jpmpopup({
+		'container':'popup-container4',
+		'style' :'background-color:rgba(0, 0, 0, 0.8);width:100%;z-index:5',
+		'onopen' : function (id) {
+			//jpmpopup.toConsole(this);
+			attachFormEvent(this.item.id);
+			getComments(this.item.id);
+		},
+		'gallery':{
+			'animation':'flip',
+			'container':'.gallery',
+			'thumbnav':'on',
+			'onslideend': function() {
+				attachFormEvent(this.item.id);
+				getComments(this.item.id);
+				
+			},
+			'onclick': function(item) {
+
+				// a thumbnail was clicked, do something
+				// use ajax here to pull/get some comments about the image or video etc
+				// item.id contains the id of the thumbnail clicked
+				//jpmpopup.toConsole(this);
+
+				// Simple navigation ;)
+				var nav = '<a href="javascript:void(0)" onclick="document.getElementById(\'navitem-0\').click();">Previous</i></a> &nbsp; <a href="javascript:void(0)" onclick="document.getElementById(\'navitem-1\').click();">Next</a>';
+				nav = (this.gallerytotal == this.item.index + 1) ? '<a href="javascript:void(0)" onclick="document.getElementById(\'navitem-0\').click();">Previous</i></a>' : nav;
+				nav = (this.item.index == 0) ? '<a href="javascript:void(0)" onclick="document.getElementById(\'navitem-0\').click();">Next</a>' : nav;
+				nav = (this.gallerytotal == 1) ? '' : nav;
+
+				// helper functions
+				var form = getForm(this.item.id);				
+
+				item.data = '<div style="padding:20px"><h2 style="max-width:240px">'+ item.about +'</h2><p>'+ (this.item.index + 1) +' of '+ this.gallerytotal +' &nbsp; ' + nav + '</p>'+ form +'<br /><a href="javascript:jpmpopup.controller.splitHorizontal(\'full\')">Split</a></div>';
+				item.html = '<div class="wrap-container"><div class="left-column" id="left-column"></div><div id="right-column" class="right-column">'+item.data+'</div>';
+				this.fullScreen(item.html);
+			}
+		}
+	});
+
+
+	var jpmx2 = new jpmpopup({
+		'container':'popup-container',
+		'onclose' : function () {
+			console.log(this);
+		},
+		'style' :'background-color:rgba(0, 0, 0, 0.8);width:100%;z-index:5',
+		'gallery':{
+			'animation':'slide',
+			'container':'.gallery2',
+			'sidebar':'on',
+			'thumbnav':'on',
+			'onclick': function(item) {
+
+			//console.log(this);
+			// a thumbnail was clicked, do something
+			// use ajax here to pull/get some comments about the image or video etc
+			// item.id contains the id of the thumbnail clicked
+
+			// Simple navigation ;)
+				var nav = '<a href="javascript:void(0)" onclick="document.getElementById(\'navitem-0\').click();">Previous</i></a> &nbsp; <a href="javascript:void(0)" onclick="document.getElementById(\'navitem-1\').click();">Next</a>';
+				nav = (this.gallerytotal == this.item.index + 1) ? '<a href="javascript:void(0)" onclick="document.getElementById(\'navitem-0\').click();">Previous</i></a>' : nav;
+				nav = (this.item.index == 0) ? '<a href="javascript:void(0)" onclick="document.getElementById(\'navitem-0\').click();">Next</a>' : nav;
+				nav = (this.gallerytotal == 1) ? '' : nav;
+
+			item.data = '<div style="padding:20px"><h2 style="max-width:240px">'+ item.about +'</h2><p>'+ (this.item.index + 1) +' of '+ this.gallerytotal +' &nbsp; '+nav+'</p><p>comment interface can go here</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam molestie enim sed dui mollis sollicitudin. Fusce auctor lacinia massa a tempor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi in accumsan nisl. Nunc ultricies pretium sodales. Maecenas iaculis turpis enim, ut ullamcorper tortor pulvinar in. Nulla sodales turpis varius nisi varius ullamcorper.</p><p>Nulla pharetra, turpis id porttitor sodales, lorem arcu rhoncus enim, ac congue ante nulla nec arcu. Praesent faucibus laoreet lacus sed blandit. Nam dapibus, lectus sed congue feugiat, magna neque consectetur elit, aliquet maximus odio risus vitae augue. Nunc ut convallis velit, ut pharetra neque. Ut sit amet orci luctus ante semper consequat. Suspendisse pretium commodo sapien id molestie. Morbi porttitor magna purus, vitae lacinia neque fermentum eleifend. Sed lobortis lorem nec quam ultrices semper. Aliquam turpis elit, consectetur ac accumsan at, ornare vitae enim. Nulla facilisi.</p><p>Quisque purus quam, cursus et justo ac, commodo efficitur velit. Aliquam gravida et nulla eu viverra. Etiam semper dapibus tempor. Suspendisse odio odio, aliquet in arcu at, tristique porttitor nulla. Phasellus consequat, tortor et ullamcorper placerat, quam eros consectetur mi, quis pellentesque sem dui eget odio. Sed dictum fringilla tellus, nec venenatis tellus cursus a. Cras efficitur interdum mi, ac interdum risus viverra ultricies. Etiam tortor quam, ornare ut odio vel, sagittis dignissim diam. Vestibulum porta imperdiet dui a elementum.</p><p>Mauris feugiat urna non dignissim congue. Donec et sapien massa. Nunc eu viverra ligula. Integer vel eros vel nulla interdum consequat a ut massa. Nunc sed turpis arcu. Nam sodales elit diam, vitae sodales urna egestas eu. Nunc tortor lorem, efficitur ut euismod iaculis, posuere sit amet quam. Nullam bibendum congue eros. Quisque rutrum non ligula ut maximus. Cras ipsum sem, imperdiet in ligula a, varius gravida mauris. Nulla vel convallis magna. Nulla quis metus at mi blandit tincidunt viverra eget dui. Aenean blandit leo vehicula lacus dictum blandit. Suspendisse nec arcu sit amet arcu malesuada pellentesque iaculis at velit. Nunc ultricies tempus diam eget elementum.</p><br /><a href="javascript:jpmpopup.controller.splitHorizontal(\'full\')">Split</a></div>';
+
+			item.html = '<div class="wrap-container"><div class="left-column" id="left-column"></div><div id="right-column" class="right-column">'+item.data+'</div>';
+
+			this.fullScreen(item.html);
+			}
+		}
+	});
+	
+	function popUp(){
+		jpmx2.item = {
+		'id':'1',
+		'type':'',
+		'file':'x.jpg',
+		'html':'<div class="wrap-container"><div class="left-column" id="left-column">bbbb</div><div class="right-column" id="right-column"><div style="padding:20px"><h2>Comments</h2><p>comment interface can go here</p></div></div>'
+		};
+		jpmx2.container = 'test';
+		jpmx2.style = 'width:100%;z-index:5;background-color:rgba(0, 0, 0, 0.4)';
+		jpmx2.fullScreen(jpmx2.item.html);
+	}
+
+	function attachFormEvent(id){
+		var id = id.replace(/[^A-Za-z0-9.-]/g, '');
+		var x = new Date();
+		var stamp = x.toISOString();
+		$('#datetime').val(stamp);
+		$("#form-"+id).submit(function(e){
+			e.preventDefault();
+			if($("input[name='comment']").val() === '') {
+				$("input[name='comment']").css({'borderColor':'red'});
+				return;
+			}
+			$("input[name='comment']").css({'borderColor':'initial'});
+			$('#sendbutton').attr("disabled","true");
+			var formdata = $('#form-'+id).serialize();
+			$('#commenttext').val('Sending...');
+			$.post('server.php',formdata,function(data){
+				var comment = data;
+				$('#comments').prepend(comment);
+				$('#commenttext').val('');
+				$('#sendbutton').prop("disabled",null);
+			});
+			
+		});
+	}
+
+	function getForm(id){
+		var id = id.replace(/[^A-Za-z0-9.-]/g, '');
+		var form = '<form id="form-'+id+'" class="comment-form"><input type="hidden" name="datetime" id="datetime" /><input type="hidden" name="id" value="'+id+'" /><input type="text" name="comment" id="commenttext" /><input type="submit" value="Send" id="sendbutton" /></form><section id="comments"></section>';
+		return form;
+	}
+
+	function getComments(id) {
+		var id = id.replace(/[^A-Za-z0-9.-]/g, '');
+		$('#comments').html('<div class="loader" style="margin-top:10px"></div>');
+		$.get('server.php',{"id":id},function(data){
+			var comments = data;
+			$('#comments').html(comments);
+			$("time.timeago").timeago();
+		});
+	}
+</script>
+<p style="text-align:center;">Copyright &copy; 2020 - 2021 James P. Malloy All Rights Reserved.</p>
+</body>
+</html>

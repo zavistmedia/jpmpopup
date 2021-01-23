@@ -718,13 +718,15 @@
 						},500);
 
 						var xtime = 0;
-						// fallback - if still has not played by 5 seconds load video element
+						// fallback - if still has not played by 6 seconds load video element
 						var runtime = setInterval(function(){
 							if(xtime > 6){
 								// jpmpopup.toConsole(newmedia.readyState);
-								instance.loadeditem = true;
 								clearInterval(runtime);
-								instance.onload(instance,newmedia,leftface,mediaon,loading);
+								if(!instance.loadeditem){
+									instance.loadeditem = true;
+									instance.onload(instance,newmedia,leftface,mediaon,loading);
+								}
 							}
 							xtime++;
 						},1000);
@@ -733,6 +735,7 @@
 						newmedia.oncanplay = function(e) {
 							clearInterval(runtime);
 							if(!instance.loadeditem){
+								instance.loadeditem = true;
 								instance.onload(instance,newmedia,leftface,mediaon,loading);
 							}
 						}
@@ -743,13 +746,15 @@
 						}
 
 						var xtime = 0;
-						// fallback - if still has not loaded by 5 secs force load
+						// fallback - if still has not loaded by 6 secs force load
 						var runtime = setInterval(function(){
 							if(xtime > 6){
 								// jpmpopup.toConsole(newmedia.readyState);
 								clearInterval(runtime);
-								instance.loadeditem = true;
-								instance.onload(instance,newmedia,leftface,mediaon,loading);
+								if(!instance.loadeditem){
+									instance.loadeditem = true;
+									instance.onload(instance,newmedia,leftface,mediaon,loading);
+								}
 							}
 							xtime++;
 						},1000);
@@ -757,6 +762,7 @@
 						newmedia.onload = function(e) {
 							clearInterval(runtime);
 							if(!instance.loadeditem){
+								instance.loadeditem = true;
 								instance.onload(instance,newmedia,leftface,mediaon,loading);
 							}
 						}

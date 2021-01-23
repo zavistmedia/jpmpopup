@@ -145,9 +145,20 @@
 			if(!instance.itemlist[item.index].loaded){
 				loading.style.display = 'block';
 			}
-			document.getElementById('media-'+item.index).onload = function(e) {
-				instance.itemlist[item.index].loaded = true;
-				loading.style.display = 'none';
+			if(item.type == 'video'){
+
+				document.getElementById('media-'+item.index).oncanplay = function(e) {
+					if(!instance.itemlist[item.index].loaded){
+						instance.itemlist[item.index].loaded = true;
+						loading.style.display = 'none';
+					}
+				}
+
+			}else {
+				document.getElementById('media-'+item.index).onload = function(e) {
+					instance.itemlist[item.index].loaded = true;
+					loading.style.display = 'none';
+				}
 			}
 		},
 		createNewItem : function(instance,leftface,loading){
@@ -285,7 +296,7 @@
 						var popcode = item.id.replace('-','');
 
 					});
-					
+
 					// pre load all images for this instance
 					var itype = gitem.getAttribute('data-type');
 					var ifile = gitem.getAttribute('data-file');
@@ -730,7 +741,7 @@
 						if(!instance.itemlist[instance.thumbitem.index].loaded){
 							loading.style.display = 'block';
 						}
-						
+
 						var xtime = 0;
 						// fallback - if still has not loaded by 5 secs force load
 						var runtime = setInterval(function(){
@@ -741,8 +752,8 @@
 								instance.onload(instance,newmedia,leftface,mediaon,loading);
 							}
 							xtime++;
-						},1000);						
-						
+						},1000);
+
 						newmedia.onload = function(e) {
 							clearInterval(runtime);
 							if(!instance.loadeditem){
@@ -757,7 +768,7 @@
 					}else {
 						instance.onload(instance,newmedia,leftface,mediaon,loading);
 					}
-					
+
 					// in case of error, remove item
 					newmedia.onerror = function(){
 						instance.errorLoading(instance,newmedia,mediaon,loading,'Sorry, there was a error loading the item.');
@@ -765,7 +776,7 @@
 			}
 		}
 	}
-	
+
 	jpmpopup.prototype.errorLoading = function (instance,newmedia,mediaon,loading,mesg){
 
 		jpmpopup.pop.animationStatus = 'error';

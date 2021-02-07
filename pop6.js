@@ -1,17 +1,15 @@
 /*
  // JPM Pop-up
- // COPYRIGHT (C) 2020 James P. Malloy. ALL RIGHTS RESERVED
+ // Copyright (C) 2020-2021 James P. Malloy All Rights Reserved
  // http://www.jpmalloy.com
  // james (@) jpmalloy.com
  // Credit must stay intact for legal use
- // Version 4 (build 6)
+ // Version 4 (build "6.1")
  // *** 100% free, do with what you like ***
- // Note: much of this code will be condensed soon. For example, document.getElementById will be replaced etc
  // No outside plugins required
  // Feel free to share with others
-
  // to do
- // build a better mousetrap ;)
+ // build a better mousetrap ;) Version 5 will have a lot of the code optimized
  // Note: build 5.1 had some bugs with the drag feature, please update to 5.4
  // for support, see my blog: https://jimswebtech.blogspot.com/
 
@@ -27,7 +25,6 @@
 	jpmx2.style = 'width:100%;z-index:5;background-color:rgba(0, 0, 0, 0.4)';
 	jpmx2.fullScreen(jpmx2.item.html);
 }
-
  */
 	'use strict';
 	function jpmpopup(set){
@@ -39,7 +36,17 @@
 		this.loading = (set.loading !== undefined) ? set.loading : '<div class="loader"></div>';
 		this.header = (set.header !== undefined) ? set.header : '';
 		this.button = (set.button !== undefined) ? set.button : 'off';
-		this.gallery = (set.gallery !== undefined) ? set.gallery.container : undefined;
+		var gallery = (set.gallery !== undefined) ? set.gallery.container : undefined;
+		if(set.gallery !== undefined){
+			if(typeof(gallery) == 'string'){
+				this.gallery = Array();
+				this.gallery[0] = gallery;
+			}else {
+				this.gallery = gallery;
+			}
+		}else {
+			this.gallery = gallery;
+		}
 		this.newOverlay = (set.cleanup !== undefined) ? set.cleanup : true;
 		this.container = (set.container !== undefined) ? set.container : undefined;
 		this.underlay = (set.underlay !== undefined) ? set.underlay : undefined;
@@ -50,8 +57,10 @@
 		this.docheight = window.document.body.clientHeight;
 		this.item = {'clicked':''};
 		this.html = '';
+		this.ytotal = 0;
 		this.console = [];
 		this.eventlist = [];
+		this.registered = [];
 		this.wrapdiv = (set.wrap !== undefined) ? set.wrap : 'wrap-container';
 		this.slideDivs = (set.slideDivs !== undefined) ? set.slideDivs : {'left':'left-column','right':'right-column'};
 		jpmpopup.console = this.console;
@@ -236,6 +245,83 @@
 			return newmedia;
 		}
 	}
+	jpmpopup.prototype.registerItems = function(){
+		
+		var instance = this;
+		// if set, select all gallery items
+		var y = this.ytotal;
+		for(var x = 0;x < this.gallery.length;x++){
+			
+		var items = document.querySelectorAll(this.gallery[x]);
+		if(!this.in_array(this.gallery[x],this.registered)){
+			this.registered.push(this.gallery[x]);
+			console.log(this.registered);
+		
+		for(var k = 0;k < items.length;k++){
+			
+			for(var i = 0;i < items[k].children.length;i++){
+				
+				//jpmpopup.toConsole(items[k].children[i]);
+				var gitem = items[k].children[i].children[0];
+				
+				// if not registered
+				if(!document.getElementById('item-'+y)){
+					
+					gitem.setAttribute('data-index',i);
+					gitem.setAttribute('data-item',y);
+					gitem.setAttribute('id','item-'+y);
+					this.connectEvent(gitem,'click',function (e){
+						var item = {
+							'id' : this.dataset.id,
+							'type' : this.dataset.type,
+							'file' : this.dataset.file,
+							'about': this.dataset.about,
+							'width': this.dataset.width,
+							'height': this.dataset.height,
+							'allow': this.dataset.allow,
+							'srctype': this.dataset.filetype,
+							'index': parseInt(this.dataset.index),
+							'item': parseInt(this.dataset.item),
+							'src': this.getAttribute('src'),
+							'clicked':'thumbnail'
+						};
+						//jpmpopup.instance = instance;
+						instance.item = item;
+						jpmpopup.pop = instance;
+						jpmpopup.pop.onclick(item);
+						instance.animate();
+						//instance.onclick(item);
+						// make instance of this container
+						var popcode = item.id.replace('-','');
+
+					});	
+				
+					// pre load all images for this instance
+					var itype = gitem.getAttribute('data-type');
+					var ifile = gitem.getAttribute('data-file');
+					if(this.preload){
+						if(itype == 'image'){
+							var img = new Image();
+							console.log(ifile);
+							img.src = ifile;
+						}
+					}
+
+				}else {
+					var itype = gitem.getAttribute('data-type');
+					var ifile = gitem.getAttribute('data-file');
+				}
+
+				this.itemlist[y] = {'width':gitem.getAttribute('data-width'),'height':gitem.getAttribute('data-height'),'allow':gitem.getAttribute('data-allow'),'src':gitem.src,'about':gitem.getAttribute('data-about'),'type':itype,'file':ifile,'index':gitem.getAttribute('data-index'),'item':gitem.getAttribute('data-item'),'id':gitem.getAttribute('data-id'),'srctype':gitem.getAttribute('data-filetype'),'loaded':false};
+				y++;
+			}
+			this.ytotal = y;
+			this.gallerytotal = i;
+		}
+		}
+		}
+		
+	}
 	jpmpopup.prototype.ini = function(set){
 
 		var instance = this;
@@ -264,54 +350,7 @@
 			// on resize
 			this.connectEvent(window,'resize',this.resizeDoc);
 
-			// if set, select all gallery items
-			var items = document.querySelectorAll(this.gallery);
-			for(var k = 0;k < items.length;k++){
-				for(var i = 0;i < items[k].children.length;i++){
-					//jpmpopup.toConsole(items[k].children[i]);
-					var gitem = items[k].children[i].children[0];
-					gitem.setAttribute('data-index',i);
-					gitem.setAttribute('id','item-'+i);
-					this.connectEvent(gitem,'click',function (e){
-						var item = {
-							'id' : this.dataset.id,
-							'type' : this.dataset.type,
-							'file' : this.dataset.file,
-							'about': this.dataset.about,
-							'width': this.dataset.width,
-							'height': this.dataset.height,
-							'allow': this.dataset.allow,
-							'srctype': this.dataset.filetype,
-							'index': parseInt(this.dataset.index),
-							'src': this.getAttribute('src'),
-							'clicked':'thumbnail'
-						};
-						//jpmpopup.instance = instance;
-						instance.item = item;
-						jpmpopup.pop = instance;
-						jpmpopup.pop.onclick(item);
-						instance.animate();
-						//instance.onclick(item);
-						// make instance of this container
-						var popcode = item.id.replace('-','');
-
-					});
-
-					// pre load all images for this instance
-					var itype = gitem.getAttribute('data-type');
-					var ifile = gitem.getAttribute('data-file');
-					if(this.preload){
-						if(itype == 'image'){
-							var img = new Image();
-							console.log(ifile);
-							img.src = ifile;
-						}
-					}
-
-					this.itemlist[i] = {'width':gitem.getAttribute('data-width'),'height':gitem.getAttribute('data-height'),'allow':gitem.getAttribute('data-allow'),'src':gitem.src,'about':gitem.getAttribute('data-about'),'type':itype,'file':ifile,'index':gitem.getAttribute('data-index'),'id':gitem.getAttribute('data-id'),'srctype':gitem.getAttribute('data-filetype'),'loaded':false};
-				}
-				this.gallerytotal = i;
-			}
+			this.registerItems();
 
 		}
 
@@ -902,8 +941,8 @@
 		nav.style.position = 'absolute';
 		//nav.style.bottom = '0';
 		//nav.style.left = '0';
-		var next = this.item.index + 1;
-		var prev = this.item.index - 1;
+		var next = this.item.item + 1;
+		var prev = this.item.item - 1;
 
 		if(this.item.type == 'image'){
 			if(!document.getElementById('fullsizeimg')){
@@ -978,7 +1017,7 @@
 				var img = new Image();
 				img.src = list.file;
 			}
-			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
+			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
 		}
 		else if(this.item.index == 0){
 		// on first item
@@ -992,7 +1031,7 @@
 				console.log(list.file);
 				img.src = list.file;
 			}
-			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
+			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
 		}
 		else {
 			arrowLeft.style.display = 'flex';
@@ -1009,7 +1048,7 @@
 				var img2 = new Image();
 				img2.src = list2.file;
 			}
-			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list2.srctype+'" /></span> <span class="nav"><img class="navthumb" src="'+list2.src+'" alt="'+list.about+'" data-id="'+list2.id+'" data-type="'+list2.type+'" data-file="'+list2.file+'" data-about="'+list2.about+'" data-index="'+list2.index+'" data-height="'+list2.height+'" data-width="'+list2.width+'" data-allow="'+list2.allow+'" data-filetype="'+list2.srctype+'" /></span>';
+			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list2.srctype+'" /></span> <span class="nav"><img class="navthumb" src="'+list2.src+'" alt="'+list.about+'" data-id="'+list2.id+'" data-type="'+list2.type+'" data-file="'+list2.file+'" data-about="'+list2.about+'" data-index="'+list2.index+'" data-item="'+list2.item+'" data-height="'+list2.height+'" data-width="'+list2.width+'" data-allow="'+list2.allow+'" data-filetype="'+list2.srctype+'" /></span>';
 		}
 
 
@@ -1046,6 +1085,7 @@
 			'allow': this.getAttribute('data-allow'),
 			'srctype': this.getAttribute('data-filetype'),
 			'index': parseInt(this.getAttribute('data-index')),
+			'item': parseInt(this.getAttribute('data-item')),
 			'src': this.getAttribute('src'),
 			'clickedid': this.getAttribute('id'),
 			'clicked':'navigation'

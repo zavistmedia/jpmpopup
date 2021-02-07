@@ -1,13 +1,18 @@
 /*
- // JPM Pop-up Script
- // COPYRIGHT (C) 2020 James P. Malloy. ALL RIGHTS RESERVED
+ // JPM Pop-up
+ // Copyright (C) 2020-2021 James P. Malloy All Rights Reserved
  // http://www.jpmalloy.com
  // james (@) jpmalloy.com
  // Credit must stay intact for legal use
- // Version 4 (build 6)
+ // Version 4 (build "6.1")
  // *** 100% free, do with what you like ***
- // Build 5.4
- // If you use this script, please send $25 via paypal.com to jim @ jpmalloy.com per site domain used on
+ // No outside plugins required
+ // Feel free to share with others
+ // to do
+ // build a better mousetrap ;) Version 5 will have a lot of the code optimized
+ // Note: build 5.1 had some bugs with the drag feature, please update to 5.4
+ // for support, see my blog: https://jimswebtech.blogspot.com/
+ 
  */
 html {
 	background: #15161c url('traffic.jpg') no-repeat top center fixed;

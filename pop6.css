@@ -145,6 +145,16 @@ div.navigation {
 	top:10px;
 	right:0;
 }
+div.errmsg {
+	width: 200px;
+	padding: 0px;
+	margin: 0 auto;
+	position: absolute;
+	z-index: 1001;
+	top: auto;
+	color: #fff;
+	text-align: center;
+}
 div.loading {
 	width: 60px;
 	padding: 0px;

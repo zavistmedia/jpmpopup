@@ -816,21 +816,31 @@
 
 					// in case of error, remove item
 					newmedia.onerror = function(){
-						instance.errorLoading(instance,newmedia,mediaon,loading,'Sorry, there was a error loading the item.');
+						instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
 					}
 			}
 		}
 	}
 
-	jpmpopup.prototype.errorLoading = function (instance,newmedia,mediaon,loading,mesg){
+	jpmpopup.prototype.errorLoading = function (instance,newmedia,mediaon,leftface,mesg){
 
 		jpmpopup.pop.animationStatus = 'error';
 		mediaon.style.display = 'none';
 		mediaon.remove();
 		newmedia.style.display = 'none';
 		newmedia.remove();
-		loading.innerHTML = '<span style="color:red;font-size:1.5em">'+mesg+'</span>';
-		//loading.style.display = 'none';
+		if(!document.getElementById('errmsgdiv')){
+			var errmsg = document.createElement('div');
+			errmsg.setAttribute('class','errmsg');
+			errmsg.setAttribute('id','errmsgdiv');
+			errmsg.style.display = 'block';
+			leftface.appendChild(errmsg);
+		}else {
+			var errmsg = document.getElementById('errmsgdiv');
+			errmsg.style.display = 'block';
+		}
+		errmsg.innerHTML = '<span style="color:red;font-size:1.5em">'+mesg+'</span>';
+		
 		if(document.getElementById('nextarrow')){
 			document.getElementById('nextarrow').style.display = 'block';
 			document.getElementById('prevarrow').style.display = 'block';

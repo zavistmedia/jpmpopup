@@ -150,13 +150,16 @@
 			}
 			newmedia.style.transition = 'unset';
 		},
-		showLoading : function(item,loading,instance) {
+		showLoading : function(item,loading,instance,leftface) {
+			
+			var mediaon = '';
 			if(!instance.itemlist[item.item].loaded){
 				loading.style.display = 'block';
 			}
+			var newmedia = document.getElementById('media-'+item.index);
 			if(item.type == 'video'){
 
-				document.getElementById('media-'+item.index).oncanplay = function(e) {
+				newmedia.oncanplay = function(e) {
 					if(!instance.itemlist[item.item].loaded){
 						instance.itemlist[item.item].loaded = true;
 						loading.style.display = 'none';
@@ -164,10 +167,14 @@
 				}
 
 			}else {
-				document.getElementById('media-'+item.index).onload = function(e) {
+				newmedia.onload = function(e) {
 					instance.itemlist[item.item].loaded = true;
 					loading.style.display = 'none';
 				}
+			}
+			
+			newmedia.onerror = function(){
+				instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
 			}
 		},
 		createNewItem : function(instance,leftface,loading){
@@ -239,7 +246,7 @@
 				if(!nomediatype){
 					leftface.appendChild(newmedia);
 					leftface.appendChild(loading);
-					instance.showLoading(item,loading,instance);
+					instance.showLoading(item,loading,instance,leftface);
 				}
 			}
 			return newmedia;
@@ -825,8 +832,10 @@
 	jpmpopup.prototype.errorLoading = function (instance,newmedia,mediaon,leftface,mesg){
 
 		jpmpopup.pop.animationStatus = 'error';
-		mediaon.style.display = 'none';
-		mediaon.remove();
+		if(mediaon != ''){
+			mediaon.style.display = 'none';
+			mediaon.remove();
+		}
 		newmedia.style.display = 'none';
 		newmedia.remove();
 		if(!document.getElementById('errmsgdiv')){

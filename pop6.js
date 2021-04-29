@@ -136,8 +136,10 @@
 			newmedia.style.maxHeight = '100%';
 			if(instance.thumbitem.type == 'iframe' || instance.thumbitem.type == 'iframe-responsive'){
 				if(instance.thumbitem.width != 'undefined' && instance.thumbitem.width != 'null'){
-					newmedia.style.height = instance.thumbitem.height;
-					newmedia.style.width = instance.thumbitem.width;
+					newmedia.style.maxHeight = instance.thumbitem.height;
+					newmedia.style.maxWidth = instance.thumbitem.width;
+					newmedia.style.height = 'auto';
+					newmedia.style.width = '100%';
 				}else {
 					newmedia.style.height = '100%';
 					newmedia.style.width = '100%';
@@ -251,9 +253,9 @@
 				if(item.width != undefined && item.width != null && item.width != 'null'){
 					style = 'max-height:'+item.height+'; max-width:'+item.width+'; ';
 				}else {
-					style = 'height: 100%; width:100%; ';
+					style = 'max-height: 100%; max-width:100%; ';
 				}
-				newmedia.setAttribute('style',style+'width: 100%; height: 100%; border:none');
+				newmedia.setAttribute('style',style+'width: 100%; height: auto; border:none');
 				newmedia.appendChild(iframe);
 			}
 			else {
@@ -439,9 +441,16 @@
 				if(jpmpopup.controller.item.type == 'iframe' || jpmpopup.controller.item.type == 'iframe-responsive'){
 
 					if(jpmpopup.controller.item.width != 'undefined'){
-						x[i].style.height = jpmpopup.controller.item.height;
-						//x[i].style.height = 'auto';
-						x[i].style.width = jpmpopup.controller.item.width;
+						if(jpmpopup.controller.item.type == 'iframe-responsive'){	
+							x[i].style.maxHeight = jpmpopup.controller.item.height;
+							x[i].style.maxWidth = jpmpopup.controller.item.width;
+							x[i].style.width = '100%';
+							x[i].style.height = 'auto';
+						}else {	
+							x[i].style.height = jpmpopup.controller.item.height;
+							//x[i].style.height = 'auto';
+							x[i].style.width = jpmpopup.controller.item.width;
+						}
 					}else {
 						x[i].style.height = '100%';
 						x[i].style.width = '100%';

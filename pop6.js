@@ -450,8 +450,7 @@
 				leftface.style.height = 'auto';
 				if(jpmpopup.controller.item.type == 'iframe-responsive'){	
 					x[i].style.position = 'relative';
-				}else {			
-					newmedia.style.position = 'unset';
+				}else {
 					x[i].style.position = 'unset';
 				}
 				x[i].style.left = 'unset';

@@ -232,11 +232,11 @@
 				var style = '';
 
 				if(item.width != undefined && item.width != null && item.width != 'null'){
-					style = 'height:'+item.height+'; width:'+item.width+'; ';
+					style = 'max-height:'+item.height+'; max-width:'+item.width+'; ';
 				}else {
 					style = 'height: 100%; width:100%; ';
 				}
-				newmedia.setAttribute('style',style+'position: unset; left: unset; max-width: 100%; max-height: 100%; border:none');
+				newmedia.setAttribute('style',style+'position: unset; left: unset; width: 100%; height: 100%; border:none');
 			}else if(item.type ==  'iframe-responsive'){
 				var iframe = document.createElement('iframe');
 				var newmedia = document.createElement('div');
@@ -249,11 +249,11 @@
 				var style = '';
 
 				if(item.width != undefined && item.width != null && item.width != 'null'){
-					style = 'height:'+item.height+'; width:'+item.width+'; ';
+					style = 'max-height:'+item.height+'; max-width:'+item.width+'; ';
 				}else {
 					style = 'height: 100%; width:100%; ';
 				}
-				newmedia.setAttribute('style',style+'');
+				newmedia.setAttribute('style',style+'width: 100%; height: 100%; border:none');
 				newmedia.appendChild(iframe);
 			}
 			else {

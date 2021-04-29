@@ -139,8 +139,18 @@
 				if(instance.thumbitem.width != 'undefined' && instance.thumbitem.width != 'null'){
 					newmedia.style.maxHeight = instance.thumbitem.height;
 					newmedia.style.maxWidth = instance.thumbitem.width;
-					//newmedia.style.height = '100%';
-					newmedia.style.width = '100%';
+					// for stupid browsers
+					newmedia.style.height = 'auto';
+					var setheight = newmedia.clientHeight;
+					console.log(setheight,"set height");
+					if(setheight != 0){
+						this.setBoxHeight = setheight;
+					}else{
+						setheight = this.setBoxHeight;
+					}
+					newmedia.style.height = setheight+'px';
+					console.log(newmedia.style.height,"slide height");					
+					
 				}else {
 					newmedia.style.height = '100%';
 					newmedia.style.width = '100%';
@@ -464,6 +474,7 @@
 								setheight = this.setBoxHeight;
 							}
 							x[i].style.height = setheight+'px';
+							console.log(x[i].style.height,"new height xxxx");
 							//x[i].style.height = '100%';
 						}else {	
 							x[i].style.height = jpmpopup.controller.item.height;

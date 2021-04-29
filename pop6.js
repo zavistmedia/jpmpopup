@@ -138,7 +138,7 @@
 				if(instance.thumbitem.width != 'undefined' && instance.thumbitem.width != 'null'){
 					newmedia.style.maxHeight = instance.thumbitem.height;
 					newmedia.style.maxWidth = instance.thumbitem.width;
-					newmedia.style.height = 'auto';
+					newmedia.style.height = '100%';
 					newmedia.style.width = '100%';
 				}else {
 					newmedia.style.height = '100%';
@@ -255,7 +255,7 @@
 				}else {
 					style = 'max-height: 100%; max-width:100%; ';
 				}
-				newmedia.setAttribute('style',style+'width: 100%; height: auto; border:none');
+				newmedia.setAttribute('style',style+'width: 100%; height: 100%; border:none');
 				newmedia.appendChild(iframe);
 			}
 			else {
@@ -445,7 +445,7 @@
 							x[i].style.maxHeight = jpmpopup.controller.item.height;
 							x[i].style.maxWidth = jpmpopup.controller.item.width;
 							x[i].style.width = '100%';
-							x[i].style.height = 'auto';
+							x[i].style.height = '100%';
 						}else {	
 							x[i].style.height = jpmpopup.controller.item.height;
 							//x[i].style.height = 'auto';

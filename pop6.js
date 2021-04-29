@@ -4,7 +4,7 @@
  // http://www.jpmalloy.com
  // james (@) jpmalloy.com
  // Credit must stay intact for legal use
- // Version 4 (build "6.1")
+ // Version 4 (build "6.4")
  // *** 100% free, do with what you like ***
  // No outside plugins required
  // Feel free to share with others
@@ -125,11 +125,16 @@
 			}
 		},
 		setNewFrameStyle : function (newmedia,instance){
-			newmedia.style.position = 'unset';
+			
+			if(instance.thumbitem.type == 'iframe-responsive'){	
+				newmedia.style.position = 'relative';
+			}else {			
+				newmedia.style.position = 'unset';
+			}
 			newmedia.style.left = 'unset';
 			newmedia.style.maxWidth = '100%';
 			newmedia.style.maxHeight = '100%';
-			if(instance.thumbitem.type == 'iframe'){
+			if(instance.thumbitem.type == 'iframe' || instance.thumbitem.type == 'iframe-responsive'){
 				if(instance.thumbitem.width != 'undefined' && instance.thumbitem.width != 'null'){
 					newmedia.style.height = instance.thumbitem.height;
 					newmedia.style.width = instance.thumbitem.width;
@@ -148,6 +153,7 @@
 			}else {
 				newmedia.style.transform = 'unset';
 			}
+			
 			newmedia.style.transition = 'unset';
 		},
 		showLoading : function(item,loading,instance,leftface) {
@@ -231,13 +237,37 @@
 					style = 'height: 100%; width:100%; ';
 				}
 				newmedia.setAttribute('style',style+'position: unset; left: unset; max-width: 100%; max-height: 100%; border:none');
-			}else {
+			}else if(item.type ==  'iframe-responsive'){
+				var iframe = document.createElement('iframe');
+				var newmedia = document.createElement('div');
+				
+				iframe.setAttribute('src',item.file);
+				iframe.setAttribute('allow',item.allow);
+				iframe.setAttribute('controls','true');
+				iframe.setAttribute('allowfullscreen','true');
+				iframe.setAttribute('class','itemframe');
+				var style = '';
+
+				if(item.width != undefined && item.width != null && item.width != 'null'){
+					style = 'height:'+item.height+'; width:'+item.width+'; ';
+				}else {
+					style = 'height: 100%; width:100%; ';
+				}
+				newmedia.setAttribute('style',style+'');
+				newmedia.appendChild(iframe);
+			}
+			else {
 				nomediatype = true;
 				var newmedia = document.createElement('div');
 			}
 
 			newmedia.setAttribute('id','media-'+item.index);
-			newmedia.setAttribute('class','maxmedia');
+			
+			if(item.type ==  'iframe-responsive'){
+				newmedia.setAttribute('class','maxmedia iframe-responsive');
+			}else {
+				newmedia.setAttribute('class','maxmedia');
+			}
 
 			if(loading == ''){
 				newmedia.style.display = 'none';
@@ -360,6 +390,7 @@
 		this.connectEvent(window,'resize',this.resizeDoc);
 
 		this.galleryButton = (this.galleryButton !== undefined) ? this.galleryButton : 'closeposition';
+		this.sidebar = (this.sidebar !== undefined) ? this.sidebar : 'on';
 
 		if(this.mode == 'html'){
 			var x = document.querySelectorAll(this.class);
@@ -394,13 +425,18 @@
 
 			for(var i = 0;i < x.length;i++){
 				leftface.style.height = 'auto';
-				x[i].style.position = 'unset';
+				if(jpmpopup.controller.item.type == 'iframe-responsive'){	
+					x[i].style.position = 'relative';
+				}else {			
+					newmedia.style.position = 'unset';
+					x[i].style.position = 'unset';
+				}
 				x[i].style.left = 'unset';
 				x[i].style.maxWidth = '100%';
 				x[i].style.maxHeight = '100%';
 				x[i].style.transform = 'unset';
 				x[i].style.transition = 'unset';
-				if(jpmpopup.controller.item.type == 'iframe'){
+				if(jpmpopup.controller.item.type == 'iframe' || jpmpopup.controller.item.type == 'iframe-responsive'){
 
 					if(jpmpopup.controller.item.width != 'undefined'){
 						x[i].style.height = jpmpopup.controller.item.height;
@@ -605,7 +641,7 @@
 
 			// stop never ending loading
 			setTimeout(function(){
-				loading.style.display = 'none';
+				//loading.style.display = 'none';
 			},12000);
 		}
 
@@ -987,7 +1023,6 @@
 			return false;
 		}
 
-
 		// create left/right navigation arrows
 		// place under navigation thumbs
 
@@ -1003,7 +1038,6 @@
 			var arrowRight = document.getElementById('arrow-right-'+id);
 			arrowRight.style.display = 'none';
 		}
-
 
 		if(!document.getElementById('arrow-left-'+id)){
 			var arrowLeft = document.createElement('div');
@@ -1151,8 +1185,10 @@
 		if(document.getElementById(jpmpopup.controller.galleryButton)){
 			document.getElementById(jpmpopup.controller.galleryButton).style.display = 'none';
 		}
-		var bg = popup.style;
-		bg.display = 'none';
+		if(popup){
+			var bg = popup.style;
+			bg.display = 'none';
+		}
 		if(jpmpopup.controller.underlay !== undefined) {
 			if(document.getElementById('underlay-'+id)){
 				document.getElementById('underlay-'+id).style.display = 'none';

@@ -61,6 +61,7 @@
 		this.console = [];
 		this.eventlist = [];
 		this.registered = [];
+		this.setBoxHeight = 0;
 		this.wrapdiv = (set.wrap !== undefined) ? set.wrap : 'wrap-container';
 		this.slideDivs = (set.slideDivs !== undefined) ? set.slideDivs : {'left':'left-column','right':'right-column'};
 		jpmpopup.console = this.console;
@@ -138,7 +139,7 @@
 				if(instance.thumbitem.width != 'undefined' && instance.thumbitem.width != 'null'){
 					newmedia.style.maxHeight = instance.thumbitem.height;
 					newmedia.style.maxWidth = instance.thumbitem.width;
-					newmedia.style.height = '100%';
+					//newmedia.style.height = '100%';
 					newmedia.style.width = '100%';
 				}else {
 					newmedia.style.height = '100%';
@@ -255,7 +256,7 @@
 				}else {
 					style = 'max-height: 100%; max-width:100%; ';
 				}
-				newmedia.setAttribute('style',style+'width: 100%; height: 100%; border:none');
+				newmedia.setAttribute('style',style+'width: 100%; height: auto; border:none');
 				newmedia.appendChild(iframe);
 			}
 			else {
@@ -280,6 +281,16 @@
 					leftface.appendChild(loading);
 					instance.showLoading(item,loading,instance,leftface);
 				}
+			}
+			if(item.type ==  'iframe-responsive'){
+				// because browsers suck
+				var setheight = document.getElementById('media-'+item.index).clientHeight;
+				if(setheight != 0){
+					this.setBoxHeight = setheight;
+				}else{
+					setheight = this.setBoxHeight;
+				}
+				document.getElementById('media-'+item.index).style.height = setheight+'px';
 			}
 			return newmedia;
 		}
@@ -445,7 +456,15 @@
 							x[i].style.maxHeight = jpmpopup.controller.item.height;
 							x[i].style.maxWidth = jpmpopup.controller.item.width;
 							x[i].style.width = '100%';
-							x[i].style.height = '100%';
+							x[i].style.height = 'auto';
+							var setheight = x[i].clientHeight;
+							if(setheight != 0){
+								this.setBoxHeight = setheight;
+							}else{
+								setheight = this.setBoxHeight;
+							}
+							x[i].style.height = setheight+'px';
+							//x[i].style.height = '100%';
 						}else {	
 							x[i].style.height = jpmpopup.controller.item.height;
 							//x[i].style.height = 'auto';

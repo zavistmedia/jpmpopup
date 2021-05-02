@@ -962,9 +962,10 @@
 		instance.disconnectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
 		instance.connectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
 
-		instance.onslideend();
+		
 		instance.navigation(instance.container);
 		instance.itemlist[instance.thumbitem.item].loaded = true;
+		
 
 	}
 
@@ -990,6 +991,7 @@
 		jpmpopup.prototype.setNewFrameStyle(newmedia,instance);
 		jpmpopup.pop.animationStatus = 'done';
 		console.log(jpmpopup.pop.animationStatus);
+		instance.onslideend();
 	}
 
 	jpmpopup.prototype.onKeyDown = function (e){

@@ -126,10 +126,10 @@
 			}
 		},
 		setNewFrameStyle : function (newmedia,instance){
-			
-			if(instance.thumbitem.type == 'iframe-responsive'){	
+
+			if(instance.thumbitem.type == 'iframe-responsive'){
 				newmedia.style.position = 'relative';
-			}else {			
+			}else {
 				newmedia.style.position = 'unset';
 			}
 			newmedia.style.left = 'unset';
@@ -139,18 +139,15 @@
 				if(instance.thumbitem.width != 'undefined' && instance.thumbitem.width != 'null'){
 					newmedia.style.maxHeight = instance.thumbitem.height;
 					newmedia.style.maxWidth = instance.thumbitem.width;
-					// for stupid browsers
 					newmedia.style.height = 'auto';
 					var setheight = newmedia.clientHeight;
-					console.log(setheight,"set height");
 					if(setheight != 0){
 						this.setBoxHeight = setheight;
 					}else{
 						setheight = this.setBoxHeight;
 					}
 					newmedia.style.height = setheight+'px';
-					console.log(newmedia.style.height,"slide height");					
-					
+
 				}else {
 					newmedia.style.height = '100%';
 					newmedia.style.width = '100%';
@@ -166,7 +163,7 @@
 			}else {
 				newmedia.style.transform = 'unset';
 			}
-			
+
 			newmedia.style.transition = 'unset';
 		},
 		showLoading : function(item,loading,instance,leftface) {
@@ -253,7 +250,7 @@
 			}else if(item.type ==  'iframe-responsive'){
 				var iframe = document.createElement('iframe');
 				var newmedia = document.createElement('div');
-				
+
 				iframe.setAttribute('src',item.file);
 				iframe.setAttribute('allow',item.allow);
 				iframe.setAttribute('controls','true');
@@ -275,7 +272,7 @@
 			}
 
 			newmedia.setAttribute('id','media-'+item.index);
-			
+
 			if(item.type ==  'iframe-responsive'){
 				newmedia.setAttribute('class','maxmedia iframe-responsive');
 			}else {
@@ -448,7 +445,7 @@
 
 			for(var i = 0;i < x.length;i++){
 				leftface.style.height = 'auto';
-				if(jpmpopup.controller.item.type == 'iframe-responsive'){	
+				if(jpmpopup.controller.item.type == 'iframe-responsive'){
 					x[i].style.position = 'relative';
 				}else {
 					x[i].style.position = 'unset';
@@ -461,7 +458,7 @@
 				if(jpmpopup.controller.item.type == 'iframe' || jpmpopup.controller.item.type == 'iframe-responsive'){
 
 					if(jpmpopup.controller.item.width != 'undefined'){
-						if(jpmpopup.controller.item.type == 'iframe-responsive'){	
+						if(jpmpopup.controller.item.type == 'iframe-responsive'){
 							x[i].style.maxHeight = jpmpopup.controller.item.height;
 							x[i].style.maxWidth = jpmpopup.controller.item.width;
 							x[i].style.width = '100%';
@@ -473,9 +470,8 @@
 								setheight = this.setBoxHeight;
 							}
 							x[i].style.height = setheight+'px';
-							console.log(x[i].style.height,"new height xxxx");
 							//x[i].style.height = '100%';
-						}else {	
+						}else {
 							x[i].style.height = jpmpopup.controller.item.height;
 							//x[i].style.height = 'auto';
 							x[i].style.width = jpmpopup.controller.item.width;

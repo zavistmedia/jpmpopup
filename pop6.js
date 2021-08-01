@@ -1085,13 +1085,11 @@
 	}
 
 	jpmpopup.prototype.isBuffering = function(){
-
 		let video = jpmpopup.videoElem;
 		if(video && video.buffered && video.buffered.end && video.buffered.length > 0){
 			var buffer = video.buffered.end(0);
 			var time   = video.currentTime;
-
-			// Check if the video hangs because of issues with e.g. performance
+			// Check if the video hangs
 			if(jpmpopup.prevBuffer.buffer === buffer && jpmpopup.prevBuffer.time === time && !video.paused){
 				return true;
 			}
@@ -1100,7 +1098,6 @@
 				"time": time
 			};
 			// Check if video buffer is less
-			// than current time (tolerance 3 sec)
 			if((buffer - 2) < time){
 				return true;
 			}

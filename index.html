@@ -16,6 +16,7 @@
 <header><img src="jpmalloy.png" alt="jpmalloy.com" /></header>
 <section class="examples">
 	<h1>News</h1>
+	<p>8/1/2021 - Version 6 is here... fixed some bugs since past changes. New stuff coming for version 6 build 2... Check back soon.</p>
 	<p>3/21/2021 - <a href="music" target="_blank">New Video Playlist Player</a> ... majority of video URLs and share URLs supported</p>
 	<p>2/7/2021 - Create dynamic gallery feeds on the fly with "load more" helper function</p>
 	<p>1/2/2021 - JPM Pop-up Version 4 released. This is now 100% free. Enjoy and share with others. Credit must stay intact.</p>
@@ -132,9 +133,9 @@ var jpmx = new jpmpopup({
 				nav = (this.gallerytotal == 1) ? '' : nav;
 
 				// helper functions
-				var form = getForm(this.item.id);				
+				var form = getForm(this.item.id);			
 
-				item.data = '<div style="padding:20px"><h2 style="max-width:240px">'+ item.about +'</h2><p>'+ (this.item.index + 1) +' of '+ this.gallerytotal +' &nbsp; ' + nav + '</p>'+ form +'<br /><a href="javascript:jpmpopup.controller.splitHorizontal(\'full\')">Split</a></div>';
+				item.data = '<div style="padding:20px"><h2 style="max-width:240px">'+ item.about +'</h2><p>'+ (this.item.index + 1) +' of '+ this.gallerytotal +' &nbsp; ' + nav + '</p>'+ form +'<br /><a href="javascript:jpmpopup.controller.splitHorizontal(\'full\')">Split</a><div style="margin-top:20px;display:none" id="videoload"><div class="buffered"><span id="buffered-amount"></span></div><div class="progress"><span id="progress-amount"></span></div></div></div>';
 				item.html = '<div class="wrap-container"><div class="left-column" id="left-column"></div><div id="right-column" class="right-column">'+item.data+'</div>';
 				this.fullScreen(item.html);
 			}

@@ -4,7 +4,7 @@
  // http://www.jpmalloy.com
  // james (@) jpmalloy.com
  // Credit must stay intact for legal use
- // Version 4 (build "6.4")
+ // Version 6 (build "1.0")
  // *** 100% free, do with what you like ***
  // No outside plugins required
  // Feel free to share with others
@@ -67,6 +67,16 @@
 		jpmpopup.console = this.console;
 		jpmpopup.eventlist = this.eventlist;
 		jpmpopup.toConsole = this.toConsole;
+		jpmpopup.loadElem = null;
+		jpmpopup.slowInternetTimeout = null;
+		jpmpopup.slowInternetStatus = 'waiting';
+		jpmpopup.checkInterval  = 50.0; // check every 50 ms (do not use lower values)
+		jpmpopup.lastPlayPos    = 0;
+		jpmpopup.currentPlayPos = 0;
+		jpmpopup.videointerval = null;
+		jpmpopup.bufferingDetected = false;
+		jpmpopup.videoElem = null;
+		jpmpopup.prevBuffer = {"buffer": null,"time": null};
 		this.ini(set);
 	}
 	jpmpopup.prototype = {
@@ -174,18 +184,26 @@
 			}
 			var newmedia = document.getElementById('media-'+item.index);
 			if(item.type == 'video'){
-
 				newmedia.oncanplay = function(e) {
 					if(!instance.itemlist[item.item].loaded){
 						instance.itemlist[item.item].loaded = true;
 						loading.style.display = 'none';
 					}
 				}
-
 			}else {
-				newmedia.onload = function(e) {
-					instance.itemlist[item.item].loaded = true;
-					loading.style.display = 'none';
+				if(item.type ==  'iframe-responsive'){
+					var x = document.querySelector('.itemframe');
+					x.onload = function(e) {
+						console.log('in showLoading');
+						instance.itemlist[item.item].loaded = true;
+						loading.style.display = 'none';
+					}
+				}else {
+					newmedia.onload = function(e) {
+						console.log('in showLoading');
+						instance.itemlist[item.item].loaded = true;
+						loading.style.display = 'none';
+					}
 				}
 			}
 
@@ -220,8 +238,9 @@
 			}else if(item.type ==  'video'){
 				var newmedia = document.createElement('video');
 				const source = document.createElement('source');
-				newmedia.setAttribute('autoplay','true');
+				//newmedia.setAttribute('autoplay','true');
 				newmedia.setAttribute('controls','true');
+				newmedia.setAttribute('preload', "");
 				source.setAttribute('src',item.file);
 				source.setAttribute('type',item.srctype);
 				var style = '';
@@ -286,6 +305,7 @@
 				if(!nomediatype){
 					leftface.appendChild(newmedia);
 					leftface.appendChild(loading);
+					jpmpopup.loadElem = loading;
 					instance.showLoading(item,loading,instance,leftface);
 				}
 			}
@@ -299,9 +319,71 @@
 				}
 				document.getElementById('media-'+item.index).style.height = setheight+'px';
 			}
+
+			jpmpopup.videoElem = newmedia;
+			if(item.type == 'video'){
+				jpmpopup.videoElem.play();
+				document.getElementById('videoload').style.display = 'block';
+				newmedia.addEventListener("play", jpmpopup.prototype.onVideoPlay);
+				newmedia.addEventListener("ended", jpmpopup.prototype.onVideoEnd);
+				newmedia.addEventListener('progress',jpmpopup.prototype.onBuffer);
+				newmedia.addEventListener('timeupdate',jpmpopup.prototype.onProgress);
+			}
 			return newmedia;
 		}
 	}
+	
+	jpmpopup.prototype.onProgress = function(e) {
+		if(document.getElementById('progress-amount')){
+		var duration =  jpmpopup.videoElem.duration;
+			if (duration > 0) {
+				document.getElementById('progress-amount').style.width = ((jpmpopup.videoElem.currentTime / duration)*100) + "%";
+			}
+		}		
+	}
+	
+	jpmpopup.prototype.onBuffer = function(e) {
+		if(document.getElementById('buffered-amount')){
+			var bufferedEnd = 0;
+			if(jpmpopup.videoElem.buffered.length > 0){
+				bufferedEnd = jpmpopup.videoElem.buffered.end(jpmpopup.videoElem.buffered.length - 1);
+			}	
+			if(jpmpopup.videoElem.duration && typeof(jpmpopup.videoElem.duration) !== "undefined"){
+				console.log(jpmpopup.videoElem.duration);
+				var duration =  jpmpopup.videoElem.duration;
+				if (duration > 0) {
+					var buffer = Math.floor(((bufferedEnd / duration)*100));
+					document.getElementById('buffered-amount').style.width = buffer + "%";
+					if(buffer > 5){
+						if(!jpmpopup.videoElem.paused){
+							
+						}
+						
+					}
+				}
+			}
+		}		
+	}
+
+	jpmpopup.prototype.onVideoEnd = function(e) {
+		clearInterval(jpmpopup.videointerval);
+	}
+
+	jpmpopup.prototype.onVideoPlay = function(e) {
+		e.target.removeEventListener(e.type, jpmpopup.prototype.onVideoPlay);
+		// Give browsers 3secs time to buffer
+		setTimeout(function(){
+			jpmpopup.videointerval = setInterval(function(){
+				if(jpmpopup.prototype.isBuffering()){
+					console.log("Buffering");
+					//jpmpopup.loadElem.style.display = 'block';
+				}else {
+					//jpmpopup.loadElem.style.display = 'none';
+				}
+			}, 500);
+		}, 3000);
+	}
+
 	jpmpopup.prototype.registerItems = function(){
 
 		var instance = this;
@@ -359,7 +441,7 @@
 					if(this.preload){
 						if(itype == 'image'){
 							var img = new Image();
-							console.log(ifile);
+							//console.log(ifile);
 							img.src = ifile;
 						}
 					}
@@ -787,6 +869,10 @@
 					if(instance.item.index == '0'){
 						instance.thumbitem.clickedid = 'navitem-1';
 					}
+					
+					if(document.getElementById('videoload')){
+						document.getElementById('videoload').style.display = 'none';
+					}
 
 					instance.item = instance.thumbitem;
 					//leftface.style.height = leftface.clientHeight + 'px';
@@ -798,6 +884,8 @@
 
 					mediaon.style.position = 'absolute';
 					mediaon.setAttribute('class','oldmedia');
+					mediaon.removeEventListener('progress',jpmpopup.prototype.onBuffer);
+					mediaon.removeEventListener('timeupdate',jpmpopup.prototype.onProgress);
 
 					var newmedia = instance.createNewItem(instance,leftface,'');
 
@@ -940,6 +1028,7 @@
 		if(instance.thumbitem.type == 'video'){
 			newmedia.oncanplay = function(e) {};
 			newmedia.onloadeddata = function(e) {};
+			document.getElementById('videoload').style.display = 'block';
 		}
 		newmedia.style.display = 'block';
 
@@ -959,13 +1048,14 @@
 		jpmpopup.pop.leftfaceElement = leftface;
 		jpmpopup.pop.loadingElement = loading;
 
-		instance.disconnectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
-		instance.connectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
-
 		
+		instance.connectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
+		//instance.disconnectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
+
+
 		instance.navigation(instance.container);
 		instance.itemlist[instance.thumbitem.item].loaded = true;
-		
+
 
 	}
 
@@ -976,8 +1066,6 @@
 		var leftface = jpmpopup.pop.leftfaceElement;
 		var loading = jpmpopup.pop.loadingElement;
 		var instance = jpmpopup.pop;
-		instance.disconnectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
-
 		if(document.getElementById('loadingdiv')){
 			loading.remove();
 		}
@@ -990,9 +1078,36 @@
 		leftface.style.height = 'auto';
 		jpmpopup.prototype.setNewFrameStyle(newmedia,instance);
 		jpmpopup.pop.animationStatus = 'done';
-		console.log(jpmpopup.pop.animationStatus);
+		// console.log(jpmpopup.pop.animationStatus);
 		instance.onslideend();
+		console.log('animation end');
+		instance.disconnectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
 	}
+
+	jpmpopup.prototype.isBuffering = function(){
+
+		let video = jpmpopup.videoElem;
+		if(video && video.buffered && video.buffered.end && video.buffered.length > 0){
+			var buffer = video.buffered.end(0);
+			var time   = video.currentTime;
+
+			// Check if the video hangs because of issues with e.g. performance
+			if(jpmpopup.prevBuffer.buffer === buffer && jpmpopup.prevBuffer.time === time && !video.paused){
+				return true;
+			}
+			jpmpopup.prevBuffer = {
+				"buffer": buffer,
+				"time": time
+			};
+			// Check if video buffer is less
+			// than current time (tolerance 3 sec)
+			if((buffer - 2) < time){
+				return true;
+			}
+
+		}
+		return false;
+	};
 
 	jpmpopup.prototype.onKeyDown = function (e){
 		e = e || window.event;
@@ -1117,7 +1232,7 @@
 			var list = this.itemlist[next];
 			if(list.type == 'image' && !this.preload){
 				var img = new Image();
-				console.log(list.file);
+				//console.log(list.file);
 				img.src = list.file;
 			}
 			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
@@ -1422,7 +1537,7 @@
 	jpmpopup.prototype.toConsole = function(){
 
 		//jpmpopup.console.push.apply(jpmpopup.console, arguments);
-		console.log.apply(console, arguments);
+		// console.log.apply(console, arguments);
 	}
 
 	jpmpopup.prototype.touchDetect = function(){

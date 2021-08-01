@@ -4,7 +4,7 @@
  // http://www.jpmalloy.com
  // james (@) jpmalloy.com
  // Credit must stay intact for legal use
- // Version 4 (build "6.2")
+ // Version 6 (build "1.0")
  // *** 100% free, do with what you like ***
  // No outside plugins required
  // Feel free to share with others
@@ -12,7 +12,6 @@
  // build a better mousetrap ;) Version 5 will have a lot of the code optimized
  // Note: build 5.1 had some bugs with the drag feature, please update to 5.4
  // for support, see my blog: https://jimswebtech.blogspot.com/
-
  */
 .maxmedia.iframe-responsive {
 	border: none;
@@ -30,7 +29,7 @@
     transform: translate(-50%, -50%);
 	height: 100%;
 	width: 100%;
-	border: none;	
+	border: none;
 }
 html {
 	background: #15161c url('traffic.jpg') no-repeat top center fixed;
@@ -452,6 +451,30 @@ div.arrow-left {
 	justify-content: center;
 	align-items: center;
 	transform: translate(-0%, -50%);
+}
+.buffered {
+	height: 20px;
+	position: relative;
+	background: #555;
+	width: 100%;
+}
+#buffered-amount {
+	display: block;
+	height: 100%;
+	background-color: #777;
+	width: 0;
+}
+.progress {
+	margin-top: -20px;
+	height: 20px;
+	position: relative;
+	width: 100%;
+}
+#progress-amount {
+	display: block;
+	height: 100%;
+	background-color: #595;
+	width: 0;
 }
 @media only screen and (max-width: 640px) {
 	header {

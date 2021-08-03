@@ -190,6 +190,9 @@
 						loading.style.display = 'none';
 					}
 				}
+				newmedia.onerror = function(){
+					instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
+				}
 			}else {
 				if(item.type ==  'iframe-responsive'){
 					var x = document.querySelector('.itemframe');
@@ -198,17 +201,19 @@
 						instance.itemlist[item.item].loaded = true;
 						loading.style.display = 'none';
 					}
+					x.onerror = function(){
+						instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
+					}
 				}else {
 					newmedia.onload = function(e) {
 						console.log('in showLoading');
 						instance.itemlist[item.item].loaded = true;
 						loading.style.display = 'none';
 					}
+					newmedia.onerror = function(){
+						instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
+					}
 				}
-			}
-
-			newmedia.onerror = function(){
-				instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
 			}
 		},
 		createNewItem : function(instance,leftface,loading){
@@ -332,22 +337,22 @@
 			return newmedia;
 		}
 	}
-	
+
 	jpmpopup.prototype.onProgress = function(e) {
 		if(document.getElementById('progress-amount')){
 		var duration =  jpmpopup.videoElem.duration;
 			if (duration > 0) {
 				document.getElementById('progress-amount').style.width = ((jpmpopup.videoElem.currentTime / duration)*100) + "%";
 			}
-		}		
+		}
 	}
-	
+
 	jpmpopup.prototype.onBuffer = function(e) {
 		if(document.getElementById('buffered-amount')){
 			var bufferedEnd = 0;
 			if(jpmpopup.videoElem.buffered.length > 0){
 				bufferedEnd = jpmpopup.videoElem.buffered.end(jpmpopup.videoElem.buffered.length - 1);
-			}	
+			}
 			if(jpmpopup.videoElem.duration && typeof(jpmpopup.videoElem.duration) !== "undefined"){
 				console.log(jpmpopup.videoElem.duration);
 				var duration =  jpmpopup.videoElem.duration;
@@ -356,13 +361,13 @@
 					document.getElementById('buffered-amount').style.width = buffer + "%";
 					if(buffer > 5){
 						if(!jpmpopup.videoElem.paused){
-							
+
 						}
-						
+
 					}
 				}
 			}
-		}		
+		}
 	}
 
 	jpmpopup.prototype.onVideoEnd = function(e) {
@@ -587,9 +592,10 @@
 				sidebar.height = '100%';
 				sidebar.overflow = 'auto';
 				if(document.getElementById("comments")){
-					const comments = document.getElementById("comments").style;
-					comments.height = '380px';
-					comments.overflowY = 'auto';
+					// const comments = document.getElementById("comments").style;
+					//comments.height = 'unset';
+					//comments.overflowY = 'auto';
+					document.getElementById("comments").setAttribute("style","");
 				}
 			}else {
 				sidebar.flexBasis = 'auto';
@@ -869,7 +875,7 @@
 					if(instance.item.index == '0'){
 						instance.thumbitem.clickedid = 'navitem-1';
 					}
-					
+
 					if(document.getElementById('videoload')){
 						document.getElementById('videoload').style.display = 'none';
 					}
@@ -1048,7 +1054,7 @@
 		jpmpopup.pop.leftfaceElement = leftface;
 		jpmpopup.pop.loadingElement = loading;
 
-		
+
 		instance.connectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
 		//instance.disconnectEvent(newmedia,'transitionend',jpmpopup.prototype.endOfAnimation);
 
@@ -1206,7 +1212,6 @@
 			arrowLeft.style.display = 'none';
 		}
 
-
 		// on last item
 		if(this.gallerytotal == this.item.index + 1){
 			arrowLeft.style.display = 'flex';
@@ -1218,7 +1223,15 @@
 				var img = new Image();
 				img.src = list.file;
 			}
-			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
+
+			var span1 = '';
+			if(list.src !== undefined && list.src != ''){
+				span1 = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
+			}else {
+				span1 = '<span class="nav" style="visibility:hidden"><span class="navthumb"  alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span></span>';
+			}
+
+			nav.innerHTML = span1;
 		}
 		else if(this.item.index == 0){
 		// on first item
@@ -1232,7 +1245,17 @@
 				//console.log(list.file);
 				img.src = list.file;
 			}
-			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
+
+			var span1 = '';
+			if(list.src !== undefined && list.src != ''){
+				span1 = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span>';
+			}else {
+
+				span1 = '<span class="nav" style="visibility:hidden"><span class="navthumb" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list.srctype+'" /></span></span>';
+
+			}
+
+			nav.innerHTML = span1;
 		}
 		else {
 			arrowLeft.style.display = 'flex';
@@ -1249,7 +1272,19 @@
 				var img2 = new Image();
 				img2.src = list2.file;
 			}
-			nav.innerHTML = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list2.srctype+'" /></span> <span class="nav"><img class="navthumb" src="'+list2.src+'" alt="'+list.about+'" data-id="'+list2.id+'" data-type="'+list2.type+'" data-file="'+list2.file+'" data-about="'+list2.about+'" data-index="'+list2.index+'" data-item="'+list2.item+'" data-height="'+list2.height+'" data-width="'+list2.width+'" data-allow="'+list2.allow+'" data-filetype="'+list2.srctype+'" /></span>';
+
+			var span1 = '', span2 = '';
+			if(list.src !== undefined && list.src != ''){
+				span1 = '<span class="nav"><img class="navthumb" src="'+list.src+'" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list2.srctype+'" /></span>';
+			}else {
+				span1 = '<span class="nav" style="visibility:hidden"><span class="navthumb" alt="'+list.about+'" data-id="'+list.id+'" data-type="'+list.type+'" data-file="'+list.file+'" data-about="'+list.about+'" data-index="'+list.index+'" data-item="'+list.item+'" data-height="'+list.height+'" data-width="'+list.width+'" data-allow="'+list.allow+'" data-filetype="'+list2.srctype+'" /></span></span>';
+			}
+			if(list2.src !== undefined && list2.src != ''){
+				span2 = '<span class="nav"><img class="navthumb" src="'+list2.src+'" alt="'+list.about+'" data-id="'+list2.id+'" data-type="'+list2.type+'" data-file="'+list2.file+'" data-about="'+list2.about+'" data-index="'+list2.index+'" data-item="'+list2.item+'" data-height="'+list2.height+'" data-width="'+list2.width+'" data-allow="'+list2.allow+'" data-filetype="'+list2.srctype+'" /></span>';
+			}else {
+				span2 = '<span class="nav" style="visibility:hidden"><span class="navthumb" alt="'+list.about+'" data-id="'+list2.id+'" data-type="'+list2.type+'" data-file="'+list2.file+'" data-about="'+list2.about+'" data-index="'+list2.index+'" data-item="'+list2.item+'" data-height="'+list2.height+'" data-width="'+list2.width+'" data-allow="'+list2.allow+'" data-filetype="'+list2.srctype+'" /></span></span>';
+			}
+			nav.innerHTML = span1+' '+span2;
 		}
 
 

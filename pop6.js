@@ -64,7 +64,7 @@
 		this.gallerytotal = 0;
 		this.wrapdiv = (set.wrap !== undefined) ? set.wrap : 'wrap-container';
 		this.slideDivs = (set.slideDivs !== undefined) ? set.slideDivs : {'left':'left-column','right':'right-column'};
-		jpmpopup.lastclicked = '';
+		jpmpopup.lastclicked = 0;
 		jpmpopup.console = this.console;
 		jpmpopup.eventlist = this.eventlist;
 		jpmpopup.toConsole = this.toConsole;
@@ -129,7 +129,7 @@
 				case 'slideIn' :
 					var mstyle = elem.newm.style;
 					mstyle.position = 'absolute';
-					mstyle.transition = 'transform .6s ease';
+					mstyle.transition = 'transform '+this.slidespeed+'s ease';
 					if(jpmpopup.lastclicked < instance.item.index){
 						mstyle.left = right + 'px';
 						mstyle.transform = 'translateX(-'+left+'px)';
@@ -139,7 +139,7 @@
 					}
 				break;
 				case 'slideOut' :
-					elem.oldm.style.transition = 'transform .6s ease';
+					elem.oldm.style.transition = 'transform '+this.slidespeed+'s ease';
 					if(jpmpopup.lastclicked < instance.item.index){
 						elem.oldm.style.transform = 'translateX(-'+right+'px)';
 					}else {
@@ -179,7 +179,7 @@
 					}
 				break;
 			}
-			
+
 		},
 		setNewFrameStyle : function (newmedia,instance){
 
@@ -535,9 +535,9 @@
 		}
 
 		if(this.gallery !== undefined) {
-
 			/* for gallery */
 			this.mode = 'javascript';
+			this.slidespeed = (set.gallery.slidespeed !== undefined) ? set.gallery.slidespeed : '.6';
 			this.onclick = (set.gallery.onclick !== undefined) ? set.gallery.onclick : function(){};
 			this.onslide = (set.gallery.onslide !== undefined) ? set.gallery.onslide : function(){};
 			this.preload = (set.gallery.preload !== undefined) ? set.gallery.preload : false;
@@ -906,9 +906,7 @@
 		}
 
 		if(instance.item.clicked == 'thumbnail' || instance.item.clicked == ''){
-
 			// No animation
-
 		}else {
 
 			// prevents flooding
@@ -1044,9 +1042,15 @@
 						newmedia.onload = function(e) {
 							instance.onload(instance,newmedia,leftface,mediaon,loading);
 						}
+						
+					}else if(instance.thumbitem.type == 'iframe-responsive') {
+						loading.style.display = 'block';
+						instance.onload(instance,newmedia,leftface,mediaon,loading);
 					}else {
 						instance.onload(instance,newmedia,leftface,mediaon,loading);
 					}
+					
+					newmedia = (instance.thumbitem.type == 'iframe-responsive') ? document.querySelector('.itemframe') : newmedia;
 
 					// in case of error, remove item
 					newmedia.onerror = function(){

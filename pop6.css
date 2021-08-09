@@ -9,10 +9,38 @@
  // No outside plugins required
  // Feel free to share with others
  // to do
- // build a better mousetrap ;) Version 5 will have a lot of the code optimized
- // Note: build 5.1 had some bugs with the drag feature, please update to 5.4
+ // build a better mousetrap ;)
  // for support, see my blog: https://jimswebtech.blogspot.com/
  */
+div.overlaygal > img {
+	display: block;
+	background-color: transparent;
+	height: auto;
+	width: 100%;
+	max-width: 140px !important;
+	margin: 0;
+	justify-content: center;
+	cursor: pointer;
+}
+div.overlaygal {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: block;
+	z-index:1000;
+	position:absolute;
+	top:0;
+	right:0;
+	/*
+	grid-template-columns: repeat(auto-fit, minmax(120px, 120px));
+	grid-gap: .5em;
+	justify-content: normal;
+	align-items: center;
+	*/
+	margin: 0px;
+	background-color: #000;
+	box-shadow:0px 20px 20px #000;
+}
 .maxmedia.iframe-responsive {
 	border: none;
 	overflow: hidden;
@@ -132,7 +160,7 @@ section#comments > div {
 	overflow-wrap: break-word;
 }
 section#comments {
-	height: 380px;
+	height: 360px;
 	width: 100%;
 	margin-top: 0px;
 	overflow-y: auto;

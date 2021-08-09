@@ -9,6 +9,7 @@
  // No outside plugins required
  // Feel free to share with others
  // to do
+ // improve code structure
  // build a better mousetrap ;)
  // for support, see my blog: https://jimswebtech.blogspot.com/
 
@@ -322,7 +323,7 @@
 				var newmedia = document.createElement('div');
 
 				iframe.setAttribute('src',item.file);
-				iframe.setAttribute('allow',item.allow);
+				//iframe.setAttribute('allow',item.allow);
 				iframe.setAttribute('controls','true');
 				iframe.setAttribute('allowfullscreen','true');
 				iframe.setAttribute('class','itemframe');
@@ -825,8 +826,8 @@
 
 			// stop never ending loading
 			setTimeout(function(){
-				//loading.style.display = 'none';
-			},12000);
+				loading.style.display = 'none';
+			},14000);
 		}
 
 		if(popup != ''){
@@ -1045,17 +1046,29 @@
 						
 					}else if(instance.thumbitem.type == 'iframe-responsive') {
 						loading.style.display = 'block';
-						instance.onload(instance,newmedia,leftface,mediaon,loading);
+						document.querySelector('.itemframe').onload = function(){
+							instance.onload(instance,newmedia,leftface,mediaon,loading);
+						}
 					}else {
 						instance.onload(instance,newmedia,leftface,mediaon,loading);
 					}
-					
-					newmedia = (instance.thumbitem.type == 'iframe-responsive') ? document.querySelector('.itemframe') : newmedia;
 
 					// in case of error, remove item
-					newmedia.onerror = function(){
-						instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
+					if(instance.thumbitem.type == 'iframe-responsive'){
+						document.querySelector('.itemframe').onerror = function(){
+							instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
+						}
+					}else {
+						newmedia.onerror = function(){
+							instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
+						}						
 					}
+					
+					// stop never ending loading
+					setTimeout(function(){
+						loading.style.display = 'none';
+					},12000);					
+					
 			}
 		}
 	}

@@ -1046,9 +1046,11 @@
 						
 					}else if(instance.thumbitem.type == 'iframe-responsive') {
 						loading.style.display = 'block';
-						document.querySelector('.itemframe').onload = function(){
+						// why never load ???
+						// Stupid browsers
+						//document.querySelector('.itemframe').onload = function(){
 							instance.onload(instance,newmedia,leftface,mediaon,loading);
-						}
+						//}
 					}else {
 						instance.onload(instance,newmedia,leftface,mediaon,loading);
 					}

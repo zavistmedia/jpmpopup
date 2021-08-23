@@ -4,7 +4,7 @@
  // http://www.jpmalloy.com
  // james (@) jpmalloy.com
  // Credit must stay intact for legal use
- // Version 6 (build "2.0")
+ // Version 6 (build "3.0")
  // *** 100% free, do with what you like ***
  // No outside plugins required
  // Feel free to share with others
@@ -83,6 +83,9 @@
 	}
 	jpmpopup.prototype = {
 
+		loadTime : function(item){
+			console.log(item);
+		},
 		showGallery : function(){
 			if(document.getElementById("overlaygal")){
 				document.getElementById("overlaygal").remove();
@@ -306,7 +309,6 @@
 
 			}else if(item.type ==  'iframe'){
 				var newmedia = document.createElement('iframe');
-				newmedia.setAttribute('src',item.file);
 				newmedia.setAttribute('allow',item.allow);
 				newmedia.setAttribute('controls','true');
 				newmedia.setAttribute('allowfullscreen','true');
@@ -361,6 +363,15 @@
 					instance.showLoading(item,loading,instance,leftface);
 				}
 			}
+			
+			// set iframe src URL after iframe is appended
+			if(item.type ==  'iframe-responsive'){
+				document.querySelector('.itemframe').setAttribute('src',item.file);
+			}
+			if(item.type ==  'iframe'){
+				document.querySelector('.maxmedia').setAttribute('src',item.file);
+			}
+			
 			if(item.type ==  'iframe-responsive'){
 				// because browsers suck
 				var setheight = document.getElementById('media-'+item.index).clientHeight;
@@ -983,21 +994,21 @@
 					}
 
 					instance.loadeditem = false;
+					var xtime = 0;
 					if(instance.thumbitem.type == 'video'){
 
+						/********** video ***********/
 						setTimeout(function(){
 							loading.style.display = 'block';
 						},500);
 
-						var xtime = 0;
-						// fallback - if still has not played by 6 seconds load video element
+						// fallback - if still has not played by 4 seconds load video element
 						var runtime = setInterval(function(){
-							if(xtime > 6){
-								// jpmpopup.toConsole(newmedia.readyState);
+							if(xtime > 4){
 								clearInterval(runtime);
 								if(!instance.loadeditem){
 									instance.loadeditem = true;
-									instance.onload(instance,newmedia,leftface,mediaon,loading);
+									instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
 								}
 							}
 							xtime++;
@@ -1008,24 +1019,23 @@
 							clearInterval(runtime);
 							if(!instance.loadeditem){
 								instance.loadeditem = true;
-								instance.onload(instance,newmedia,leftface,mediaon,loading);
+								instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
 							}
 						}
 
 					}else if(instance.thumbitem.type == 'image') {
+
+						/********** image ***********/
 						if(!instance.itemlist[instance.thumbitem.item].loaded){
 							loading.style.display = 'block';
 						}
-
-						var xtime = 0;
-						// fallback - if still has not loaded by 6 secs force load
+						// fallback - if still has not loaded by 4 secs force load
 						var runtime = setInterval(function(){
-							if(xtime > 6){
-								// jpmpopup.toConsole(newmedia.readyState);
+							if(xtime > 4){
 								clearInterval(runtime);
 								if(!instance.loadeditem){
 									instance.loadeditem = true;
-									instance.onload(instance,newmedia,leftface,mediaon,loading);
+									instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
 								}
 							}
 							xtime++;
@@ -1035,24 +1045,60 @@
 							clearInterval(runtime);
 							if(!instance.loadeditem){
 								instance.loadeditem = true;
-								instance.onload(instance,newmedia,leftface,mediaon,loading);
+								instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
 							}
 						}
 					}else if(instance.thumbitem.type == 'iframe') {
+
+						/********** iframe ***********/
 						loading.style.display = 'block';
+						// fallback - if still has not loaded by 4 secs force load
+						var runtime = setInterval(function(){
+							if(xtime > 4){
+								clearInterval(runtime);
+								if(!instance.loadeditem){
+									instance.loadeditem = true;
+									instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
+								}
+							}
+							xtime++;
+						},1000);
+
 						newmedia.onload = function(e) {
-							instance.onload(instance,newmedia,leftface,mediaon,loading);
+							clearInterval(runtime);
+							if(!instance.loadeditem){
+								instance.loadeditem = true;
+								instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
+							}
+						}
+
+					}else if(instance.thumbitem.type == 'iframe-responsive') {
+
+						/********** iframe-responsive ***********/
+						loading.style.display = 'block';
+						var iframe = document.querySelector('.itemframe');
+						// fallback - if still has not loaded by 4 sec force load
+						var runtime = setInterval(function(){
+							if(xtime > 4){
+								clearInterval(runtime);
+								if(!instance.loadeditem){
+									instance.loadeditem = true;
+									instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
+								}
+							}
+							xtime++;
+						},1000);
+
+						iframe.onload = function(e) {
+							clearInterval(runtime);
+							if(!instance.loadeditem){
+								instance.loadeditem = true;
+								instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
+							}
 						}
 						
-					}else if(instance.thumbitem.type == 'iframe-responsive') {
-						loading.style.display = 'block';
-						// why never load ???
-						// Stupid browsers
-						//document.querySelector('.itemframe').onload = function(){
-							instance.onload(instance,newmedia,leftface,mediaon,loading);
-						//}
 					}else {
-						instance.onload(instance,newmedia,leftface,mediaon,loading);
+						instance.onload(instance,newmedia,leftface,mediaon,loading,xtime);
 					}
 
 					// in case of error, remove item
@@ -1063,14 +1109,14 @@
 					}else {
 						newmedia.onerror = function(){
 							instance.errorLoading(instance,newmedia,mediaon,leftface,'Sorry, there was a error loading the item.');
-						}						
+						}
 					}
-					
+
 					// stop never ending loading
 					setTimeout(function(){
 						loading.style.display = 'none';
-					},12000);					
-					
+					},12000);
+
 			}
 		}
 	}
@@ -1102,7 +1148,9 @@
 		}
 	}
 
-	jpmpopup.prototype.onload = function (instance,newmedia,leftface,mediaon,loading) {
+	jpmpopup.prototype.onload = function (instance,newmedia,leftface,mediaon,loading,xtime) {
+		
+		this.loadTime({"loaded":xtime,"what":instance.thumbitem.type,"file":instance.thumbitem.file});
 
 		if(document.getElementById('loadingdiv')){
 			loading.remove();
